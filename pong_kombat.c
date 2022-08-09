@@ -6,15 +6,18 @@
 #include "actor.h"
 #include "data.h"
 
-#define PLAYER_TOP (0)
+#define PLAYER_TOP (4)
 #define PLAYER_LEFT (0)
-#define PLAYER_RIGHT (256 - 16)
-#define PLAYER_BOTTOM (SCREEN_H - 16)
+#define PLAYER_RIGHT (256 - 8)
+#define PLAYER_BOTTOM (SCREEN_H - 48 - 8)
 #define PLAYER_SPEED (3)
 
 #define BACKGROUND_BASE_TILE (192)
 
 actor player;
+actor ball;
+actor projectile;
+
 char frames_elapsed;
 
 void load_standard_palettes() {
@@ -109,15 +112,22 @@ void gameplay_loop() {
 
 	SMS_displayOn();
 	
-	init_actor(&player, 116, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
+	init_actor(&player, 16, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
 	player.animation_delay = 20;
 	
+	init_actor(&ball, 32, PLAYER_TOP + 16, 2, 1, 48, 4);
+	ball.animation_delay = 20;
+
+	init_actor(&projectile, 64, PLAYER_TOP + 16, 2, 1, 4, 4);
+
 	while (1) {	
 		handle_player_input();
 		
 		SMS_initSprites();
 
 		draw_player();
+		draw_actor(&ball);
+		draw_actor(&projectile);
 		
 		SMS_finalizeSprites();
 		SMS_waitForVBlank();

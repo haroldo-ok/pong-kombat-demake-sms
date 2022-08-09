@@ -1,5 +1,5 @@
 PRJNAME := pong_kombat
-OBJS := data.rel actor.rel shot.rel boss_shot.rel shots.rel map.rel score.rel pong_kombat.rel
+OBJS := data.rel actor.rel pong_kombat.rel
 
 all: $(PRJNAME).sms
 

@@ -109,7 +109,7 @@ void gameplay_loop() {
 
 	SMS_displayOn();
 	
-	init_actor(&player, 116, PLAYER_BOTTOM - 16, 3, 1, 2, 4);
+	init_actor(&player, 116, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
 	player.animation_delay = 20;
 	
 	while (1) {	

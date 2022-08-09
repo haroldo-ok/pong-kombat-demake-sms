@@ -12,19 +12,20 @@ void draw_meta_sprite(int x, int y, int w, int h, unsigned char tile) {
 	static unsigned char st;
 	
 	sy = y;
-	st = tile;
 	for (i = h; i; i--) {
+		st = tile;
 		if (y >= 0 && y < SCREEN_H) {
 			sx = x;
 			for (j = w; j; j--) {
 				if (sx >= 0 && sx < SCREEN_W) {
-					SMS_addSprite(sx, sy, tile);
+					SMS_addSprite(sx, sy, st);
 				}
 				sx += 8;
-				tile += 2;
+				st += 2;
 			}
 		}
 		sy += 16;
+		tile += 64;
 	}
 }
 

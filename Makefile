@@ -1,23 +1,16 @@
-PRJNAME := dragon_blaster
-OBJS := data.rel actor.rel shot.rel boss_shot.rel shots.rel map.rel score.rel dragon_blaster.rel
+PRJNAME := pong_kombat
+OBJS := data.rel actor.rel shot.rel boss_shot.rel shots.rel map.rel score.rel pong_kombat.rel
 
 all: $(PRJNAME).sms
 
-data.c: data/* data/sprites_tiles.psgcompr data/tileset_tiles.psgcompr data/background_tiles.psgcompr data/dracolich_tiles.psgcompr \
-		data/path1.path data/level1.bin
+data.c: data/* data/sprites_tiles.psgcompr data/the_pit_tiles.psgcompr
 	folder2c data data
 	
 data/sprites_tiles.psgcompr: data/img/sprites.png
 	BMP2Tile.exe data/img/sprites.png -noremovedupes -8x16 -palsms -fullpalette -savetiles data/sprites_tiles.psgcompr -savepalette data/sprites_palette.bin
 	
-data/tileset_tiles.psgcompr: data/img/tileset.png
-	BMP2Tile.exe data/img/tileset.png -noremovedupes -8x16 -palsms -fullpalette -savetiles data/tileset_tiles.psgcompr -savepalette data/tileset_palette.bin
-
-data/background_tiles.psgcompr: data/img/background.png
-	BMP2Tile.exe data/img/background.png -palsms -fullpalette -savetiles data/background_tiles.psgcompr -savetilemap data/background_tilemap.bin -savepalette data/background_palette.bin
-	
-data/dracolich_tiles.psgcompr: data/img/dracolich.png
-	BMP2Tile.exe data/img/dracolich.png -palsms -fullpalette -savetiles data/dracolich_tiles.psgcompr -savetilemap data/dracolich_tilemap.bin -savepalette data/dracolich_palette.bin
+data/the_pit_tiles.psgcompr: data/img/the_pit.png
+	BMP2Tile.exe data/img/the_pit.png -palsms -fullpalette -savetiles data/the_pit_tiles.psgcompr -savetilemap data/the_pit_tilemap.bin -savepalette data/the_pit_palette.bin
 
 data/%.path: data/path/%.spline.json
 	node tool/convert_splines.js $< $@

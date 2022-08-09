@@ -76,9 +76,9 @@ void draw_background() {
 
 	// Draws the background.
 	unsigned int *t = the_pit_tilemap_bin;
-	for (char y = 0; y != 16; y++) {
+	for (char y = 0; y != 32; y++) {
 		SMS_setNextTileatXY(0, y);
-		for (char x = 0; x != 12; x++) {
+		for (char x = 0; x != 32; x++) {
 			SMS_setTile(*t + BACKGROUND_BASE_TILE);
 			t++;
 		}

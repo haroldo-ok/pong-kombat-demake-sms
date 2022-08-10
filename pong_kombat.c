@@ -8,8 +8,8 @@
 
 #define PLAYER_TOP (4)
 #define PLAYER_LEFT (0)
-#define PLAYER_RIGHT (256 - 8)
-#define PLAYER_BOTTOM (SCREEN_H - 48 - 8)
+#define PLAYER_RIGHT (256)
+#define PLAYER_BOTTOM (SCREEN_H - 48 - 4)
 #define PLAYER_SPEED (3)
 
 #define BACKGROUND_BASE_TILE (192)
@@ -41,12 +41,6 @@ void wait_button_release() {
 void handle_player_input() {
 	static unsigned char joy;	
 	joy = SMS_getKeysStatus();
-
-	if (joy & PORT_A_KEY_LEFT) {
-		if (player.x > PLAYER_LEFT) player.x -= PLAYER_SPEED;
-	} else if (joy & PORT_A_KEY_RIGHT) {
-		if (player.x < PLAYER_RIGHT) player.x += PLAYER_SPEED;
-	}
 
 	if (joy & PORT_A_KEY_UP) {
 		if (player.y > PLAYER_TOP) player.y -= PLAYER_SPEED;

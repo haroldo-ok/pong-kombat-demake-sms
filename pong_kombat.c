@@ -73,6 +73,8 @@ void handle_ball() {
 		init_actor(&ball, (SCREEN_W >> 1) - 8, (SCREEN_H >> 1) - 8, 2, 1, 48 + ((rand() % 4) << 2), 1);
 		ball_ctl.spd_x = rand() & 1 ? 1 : -1;
 		ball_ctl.spd_y = rand() & 1 ? 1 : -1;
+		// TODO: Just for testing
+		ball_ctl.spd_x = -2;
 	}
 	
 	ball.x += ball_ctl.spd_x;
@@ -80,6 +82,11 @@ void handle_ball() {
 	
 	if (ball.x < 0 || ball.x > SCREEN_W - 8) ball.active = 0;	
 	if (ball.y < 0 || ball.y > SCREEN_H - 16) ball_ctl.spd_y = -ball_ctl.spd_y;
+	
+	if (ball.x > player1.x && ball.x < player1.x + 8 &&
+		ball.y > player1.y - 16 && ball.y < player1.y + 32) {
+		ball_ctl.spd_x = abs(ball_ctl.spd_x);
+	}
 }
 
 void clear_tilemap() {
@@ -167,3 +174,4 @@ SMS_EMBED_SEGA_ROM_HEADER(9999,0); // code 9999 hopefully free, here this means 
 SMS_EMBED_SDSC_HEADER(0,1, 2022, 8, 9, "Haroldo-OK\\2022", "Pong Kombat Demake",
   "MS-DOS \"Pong Kombat\" demade for the Sega Master System.\n"
   "Originally made for the \"So Bad it's Good' Jam 2022\" - https://itch.io/jam/sbigjam2022");
+

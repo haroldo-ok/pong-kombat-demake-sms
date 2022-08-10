@@ -85,6 +85,17 @@ void init_ball() {
 	ball.active = 0;
 }
 
+void calculate_ball_deflection(actor *ply) {
+	int delta_y = (ply->y + 16) - (ball.y + 8);
+	
+	ball_ctl.spd_y -= delta_y / 6;
+	if (ball_ctl.spd_y > 3) {
+		ball_ctl.spd_y = 3;
+	} else if (ball_ctl.spd_y < -3) {
+		ball_ctl.spd_y = -3;
+	}
+}
+
 void handle_ball() {
 	if (!ball.active) {
 		init_actor(&ball, (SCREEN_W >> 1) - 8, (SCREEN_H >> 1) - 8, 2, 1, 48 + ((rand() % 4) << 2), 1);
@@ -101,11 +112,13 @@ void handle_ball() {
 	if (ball.x > player1.x && ball.x < player1.x + 8 &&
 		ball.y > player1.y - 16 && ball.y < player1.y + 32) {
 		ball_ctl.spd_x = abs(ball_ctl.spd_x);
+		calculate_ball_deflection(&player1);
 	}
 
 	if (ball.x > player2.x - 16 && ball.x < player2.x - 8 &&
 		ball.y > player2.y - 16 && ball.y < player2.y + 32) {
 		ball_ctl.spd_x = -abs(ball_ctl.spd_x);
+		calculate_ball_deflection(&player2);
 	}
 }
 

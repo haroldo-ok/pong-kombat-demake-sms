@@ -14,7 +14,8 @@
 
 #define BACKGROUND_BASE_TILE (192)
 
-actor player;
+actor player1;
+actor player2;
 actor ball;
 actor projectile;
 
@@ -38,20 +39,25 @@ void wait_button_release() {
 	} while (SMS_getKeysStatus() & (PORT_A_KEY_1 | PORT_A_KEY_2));
 }
 
-void handle_player_input() {
-	static unsigned char joy;	
-	joy = SMS_getKeysStatus();
-
-	if (joy & PORT_A_KEY_UP) {
-		if (player.y > PLAYER_TOP) player.y -= PLAYER_SPEED;
-	} else if (joy & PORT_A_KEY_DOWN) {
-		if (player.y < PLAYER_BOTTOM) player.y += PLAYER_SPEED;
+void handle_player_input(actor *act, unsigned int joy, unsigned int upKey, unsigned int downKey, unsigned int fireKey) {
+	if (joy & upKey) {
+		if (act->y > PLAYER_TOP) act->y -= PLAYER_SPEED;
+	} else if (joy & downKey) {
+		if (act->y < PLAYER_BOTTOM) act->y += PLAYER_SPEED;
 	}
-
 }
 
-void draw_player() {
-	draw_actor(&player);
+void handle_players_input() {
+	static unsigned int joy;	
+	joy = SMS_getKeysStatus();
+	
+	handle_player_input(&player1, joy, PORT_A_KEY_UP, PORT_A_KEY_DOWN, PORT_A_KEY_1 | PORT_A_KEY_2);
+	handle_player_input(&player2, joy, PORT_B_KEY_UP, PORT_B_KEY_DOWN, PORT_B_KEY_1 | PORT_B_KEY_2);
+}
+
+void draw_players() {
+	draw_actor(&player1);
+	draw_actor(&player2);
 }
 
 void clear_tilemap() {
@@ -106,8 +112,8 @@ void gameplay_loop() {
 
 	SMS_displayOn();
 	
-	init_actor(&player, 16, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
-	player.animation_delay = 20;
+	init_actor(&player1, 16, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
+	init_actor(&player2, 256 - 24, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
 	
 	init_actor(&ball, 32, PLAYER_TOP + 16, 2, 1, 48, 4);
 	ball.animation_delay = 20;
@@ -115,11 +121,11 @@ void gameplay_loop() {
 	init_actor(&projectile, 64, PLAYER_TOP + 16, 2, 1, 4, 4);
 
 	while (1) {	
-		handle_player_input();
+		handle_players_input();
 		
 		SMS_initSprites();
 
-		draw_player();
+		draw_players();
 		draw_actor(&ball);
 		draw_actor(&projectile);
 		

@@ -9,7 +9,7 @@
 #define PLAYER_TOP (4)
 #define PLAYER_LEFT (0)
 #define PLAYER_RIGHT (256)
-#define PLAYER_BOTTOM (SCREEN_H - 48 - 4)
+#define PLAYER_BOTTOM (SCREEN_H - 32 - 4)
 #define PLAYER_SPEED (3)
 
 #define BACKGROUND_BASE_TILE (192)

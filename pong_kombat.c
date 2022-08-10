@@ -51,12 +51,29 @@ void handle_player_input(actor *act, unsigned int joy, unsigned int upKey, unsig
 	}
 }
 
+void handle_player_ai(actor *act) {
+	int target_y = act->y - 8;
+	
+	if (target_y > ball.y) {
+		act->y -= PLAYER_SPEED;
+	} else if (target_y < ball.y) {
+		act->y += PLAYER_SPEED;
+	}
+
+	if (act->y < PLAYER_TOP) {
+		act->y = PLAYER_TOP;
+	} else if (act->y > PLAYER_BOTTOM) {
+		act->y = PLAYER_BOTTOM;
+	}
+}
+
 void handle_players_input() {
 	static unsigned int joy;	
 	joy = SMS_getKeysStatus();
 	
 	handle_player_input(&player1, joy, PORT_A_KEY_UP, PORT_A_KEY_DOWN, PORT_A_KEY_1 | PORT_A_KEY_2);
-	handle_player_input(&player2, joy, PORT_B_KEY_UP, PORT_B_KEY_DOWN, PORT_B_KEY_1 | PORT_B_KEY_2);
+	handle_player_ai(&player2);
+	//handle_player_input(&player2, joy, PORT_B_KEY_UP, PORT_B_KEY_DOWN, PORT_B_KEY_1 | PORT_B_KEY_2);
 }
 
 void draw_players() {
@@ -73,8 +90,6 @@ void handle_ball() {
 		init_actor(&ball, (SCREEN_W >> 1) - 8, (SCREEN_H >> 1) - 8, 2, 1, 48 + ((rand() % 4) << 2), 1);
 		ball_ctl.spd_x = rand() & 1 ? 1 : -1;
 		ball_ctl.spd_y = rand() & 1 ? 1 : -1;
-		// TODO: Just for testing
-		ball_ctl.spd_x = 2;
 	}
 	
 	ball.x += ball_ctl.spd_x;

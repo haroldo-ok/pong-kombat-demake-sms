@@ -74,7 +74,7 @@ void handle_ball() {
 		ball_ctl.spd_x = rand() & 1 ? 1 : -1;
 		ball_ctl.spd_y = rand() & 1 ? 1 : -1;
 		// TODO: Just for testing
-		ball_ctl.spd_x = -2;
+		ball_ctl.spd_x = 2;
 	}
 	
 	ball.x += ball_ctl.spd_x;
@@ -86,6 +86,11 @@ void handle_ball() {
 	if (ball.x > player1.x && ball.x < player1.x + 8 &&
 		ball.y > player1.y - 16 && ball.y < player1.y + 32) {
 		ball_ctl.spd_x = abs(ball_ctl.spd_x);
+	}
+
+	if (ball.x > player2.x - 16 && ball.x < player2.x - 8 &&
+		ball.y > player2.y - 16 && ball.y < player2.y + 32) {
+		ball_ctl.spd_x = -abs(ball_ctl.spd_x);
 	}
 }
 

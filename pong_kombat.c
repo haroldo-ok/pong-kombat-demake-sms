@@ -19,6 +19,10 @@ actor player2;
 actor ball;
 actor projectile;
 
+struct ball_ctl {
+	signed char spd_x, spd_y;
+} ball_ctl;
+
 char frames_elapsed;
 
 void load_standard_palettes() {
@@ -58,6 +62,24 @@ void handle_players_input() {
 void draw_players() {
 	draw_actor(&player1);
 	draw_actor(&player2);
+}
+
+void init_ball() {
+	ball.active = 0;
+}
+
+void handle_ball() {
+	if (!ball.active) {
+		init_actor(&ball, (SCREEN_W >> 1) - 8, (SCREEN_H >> 1) - 8, 2, 1, 48 + ((rand() % 4) << 2), 1);
+		ball_ctl.spd_x = rand() & 1 ? 1 : -1;
+		ball_ctl.spd_y = rand() & 1 ? 1 : -1;
+	}
+	
+	ball.x += ball_ctl.spd_x;
+	ball.y += ball_ctl.spd_y;
+	
+	if (ball.x < 0 || ball.x > SCREEN_W - 8) ball.active = 0;	
+	if (ball.y < 0 || ball.y > SCREEN_H - 16) ball_ctl.spd_y = -ball_ctl.spd_y;
 }
 
 void clear_tilemap() {
@@ -114,14 +136,14 @@ void gameplay_loop() {
 	
 	init_actor(&player1, 16, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
 	init_actor(&player2, 256 - 24, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
-	
-	init_actor(&ball, 32, PLAYER_TOP + 16, 2, 1, 48, 4);
-	ball.animation_delay = 20;
+
+	init_ball();
 
 	init_actor(&projectile, 64, PLAYER_TOP + 16, 2, 1, 4, 4);
 
 	while (1) {	
 		handle_players_input();
+		handle_ball();
 		
 		SMS_initSprites();
 

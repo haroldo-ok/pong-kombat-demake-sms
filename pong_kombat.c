@@ -14,8 +14,13 @@
 
 #define BACKGROUND_BASE_TILE (192)
 
-actor player1;
-actor player2;
+typedef struct player_info {
+	actor act;
+} player_info;
+
+player_info player1;
+player_info player2;
+
 actor ball;
 actor projectile;
 
@@ -43,27 +48,27 @@ void wait_button_release() {
 	} while (SMS_getKeysStatus() & (PORT_A_KEY_1 | PORT_A_KEY_2));
 }
 
-void handle_player_input(actor *act, unsigned int joy, unsigned int upKey, unsigned int downKey, unsigned int fireKey) {
+void handle_player_input(player_info *ply, unsigned int joy, unsigned int upKey, unsigned int downKey, unsigned int fireKey) {
 	if (joy & upKey) {
-		if (act->y > PLAYER_TOP) act->y -= PLAYER_SPEED;
+		if (ply->act.y > PLAYER_TOP) ply->act.y -= PLAYER_SPEED;
 	} else if (joy & downKey) {
-		if (act->y < PLAYER_BOTTOM) act->y += PLAYER_SPEED;
+		if (ply->act.y < PLAYER_BOTTOM) ply->act.y += PLAYER_SPEED;
 	}
 }
 
-void handle_player_ai(actor *act) {
-	int target_y = act->y - 8;
+void handle_player_ai(player_info *ply) {
+	int target_y = ply->act.y - 8;
 	
 	if (target_y > ball.y) {
-		act->y -= PLAYER_SPEED;
+		ply->act.y -= PLAYER_SPEED;
 	} else if (target_y < ball.y) {
-		act->y += PLAYER_SPEED;
+		ply->act.y += PLAYER_SPEED;
 	}
 
-	if (act->y < PLAYER_TOP) {
-		act->y = PLAYER_TOP;
-	} else if (act->y > PLAYER_BOTTOM) {
-		act->y = PLAYER_BOTTOM;
+	if (ply->act.y < PLAYER_TOP) {
+		ply->act.y = PLAYER_TOP;
+	} else if (ply->act.y > PLAYER_BOTTOM) {
+		ply->act.y = PLAYER_BOTTOM;
 	}
 }
 
@@ -77,8 +82,8 @@ void handle_players_input() {
 }
 
 void draw_players() {
-	draw_actor(&player1);
-	draw_actor(&player2);
+	draw_actor(&player1.act);
+	draw_actor(&player2.act);
 }
 
 void init_ball() {
@@ -109,16 +114,16 @@ void handle_ball() {
 	if (ball.x < 0 || ball.x > SCREEN_W - 8) ball.active = 0;	
 	if (ball.y < 0 || ball.y > SCREEN_H - 16) ball_ctl.spd_y = -ball_ctl.spd_y;
 	
-	if (ball.x > player1.x && ball.x < player1.x + 8 &&
-		ball.y > player1.y - 16 && ball.y < player1.y + 32) {
+	if (ball.x > player1.act.x && ball.x < player1.act.x + 8 &&
+		ball.y > player1.act.y - 16 && ball.y < player1.act.y + 32) {
 		ball_ctl.spd_x = abs(ball_ctl.spd_x);
-		calculate_ball_deflection(&player1);
+		calculate_ball_deflection(&player1.act);
 	}
 
-	if (ball.x > player2.x - 16 && ball.x < player2.x - 8 &&
-		ball.y > player2.y - 16 && ball.y < player2.y + 32) {
+	if (ball.x > player2.act.x - 16 && ball.x < player2.act.x - 8 &&
+		ball.y > player2.act.y - 16 && ball.y < player2.act.y + 32) {
 		ball_ctl.spd_x = -abs(ball_ctl.spd_x);
-		calculate_ball_deflection(&player2);
+		calculate_ball_deflection(&player2.act);
 	}
 }
 
@@ -174,8 +179,8 @@ void gameplay_loop() {
 
 	SMS_displayOn();
 	
-	init_actor(&player1, 16, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
-	init_actor(&player2, 256 - 24, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
+	init_actor(&player1.act, 16, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
+	init_actor(&player2.act, 256 - 24, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
 
 	init_ball();
 

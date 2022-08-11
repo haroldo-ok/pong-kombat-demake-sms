@@ -16,6 +16,7 @@
 
 typedef struct player_info {
 	actor act;
+	
 } player_info;
 
 player_info player1;
@@ -46,6 +47,10 @@ void wait_button_release() {
 	do {
 		SMS_waitForVBlank();
 	} while (SMS_getKeysStatus() & (PORT_A_KEY_1 | PORT_A_KEY_2));
+}
+
+void init_player(player_info *ply, int x) {
+	init_actor(&ply->act, x, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
 }
 
 void handle_player_input(player_info *ply, unsigned int joy, unsigned int upKey, unsigned int downKey, unsigned int fireKey) {
@@ -179,8 +184,12 @@ void gameplay_loop() {
 
 	SMS_displayOn();
 	
+	/*
 	init_actor(&player1.act, 16, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
 	init_actor(&player2.act, 256 - 24, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
+	*/
+	init_player(&player1, 16);
+	init_player(&player2, 256 - 24);
 
 	init_ball();
 

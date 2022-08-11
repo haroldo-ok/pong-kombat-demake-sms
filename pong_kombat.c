@@ -16,6 +16,7 @@
 
 typedef struct player_info {
 	actor act;	
+	actor atk;
 	
 	char last_key;
 	char key_pos;
@@ -26,7 +27,6 @@ player_info player1;
 player_info player2;
 
 actor ball;
-actor projectile;
 
 struct ball_ctl {
 	signed char spd_x, spd_y;
@@ -90,7 +90,7 @@ void handle_player_input(player_info *ply, unsigned int joy, unsigned int upKey,
 		ply->key_pos = (ply->key_pos + 1) & 0x03;
 		
 		if (has_key_sequence(ply, "BBBB")) {
-			init_actor(&projectile, ply->act.x, ply->act.y, 2, 1, 4, 4);
+			init_actor(&ply->atk, ply->act.x, ply->act.y + 8, 2, 1, 4, 4);
 			memset(ply->key_buffer, 0, 4);
 		}
 	}
@@ -169,6 +169,23 @@ void handle_ball() {
 	}
 }
 
+void handle_projectile(player_info *ply, int speed) {
+	if (!ply->atk.active) return;
+	
+	ply->atk.x += speed;
+	if (ply->atk.x < 0 || ply->atk.x > SCREEN_W - 16) ply->atk.active = 0;
+}
+
+void handle_projectiles() {
+	handle_projectile(&player1, 3);
+	handle_projectile(&player2, -3);
+}
+
+void draw_projectiles() {
+	draw_actor(&player1.atk);
+	draw_actor(&player2.atk);
+}
+
 void clear_tilemap() {
 	SMS_setNextTileatXY(0, 0);
 	for (int i = (SCREEN_CHAR_W * SCROLL_CHAR_H); i; i--) {
@@ -226,17 +243,16 @@ void gameplay_loop() {
 
 	init_ball();
 
-	init_actor(&projectile, 64, PLAYER_TOP + 16, 2, 1, 4, 4);
-
 	while (1) {	
 		handle_players_input();
 		handle_ball();
+		handle_projectiles();
 		
 		SMS_initSprites();
 
 		draw_players();
 		draw_actor(&ball);
-		draw_actor(&projectile);
+		draw_projectiles();
 		
 		SMS_finalizeSprites();
 		SMS_waitForVBlank();

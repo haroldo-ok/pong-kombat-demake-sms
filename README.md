@@ -1,5 +1,5 @@
 # pong-kombat-demake-sms
-MS-DOS "Pong Kombat" demade for the Sega Master System; originally made for the "'So Bad it's Good' Jam 2022"
+MS-DOS "Pong Kombat" demade for the Sega Master System; originally made for the "['So Bad it's Good' Jam 2022](https://itch.io/jam/sbigjam2022)".
 
 *This is a work-in-progress.*
 

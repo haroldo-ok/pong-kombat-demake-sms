@@ -15,8 +15,11 @@
 #define BACKGROUND_BASE_TILE (192)
 
 typedef struct player_info {
-	actor act;
+	actor act;	
 	
+	char last_key;
+	char key_pos;
+	char key_buffer[4];
 } player_info;
 
 player_info player1;
@@ -50,15 +53,49 @@ void wait_button_release() {
 }
 
 void init_player(player_info *ply, int x) {
+	memset(ply, 0, sizeof(player_info));
 	init_actor(&ply->act, x, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
 }
 
+char has_key_sequence(player_info *ply, char *sequence) {
+	char pos = ply->key_pos;
+	char *ch = sequence;
+	
+	while (*ch) {
+		if (*ch != ply->key_buffer[pos]) {
+			return 0;
+		}
+		ch++;
+		pos = (pos + 1) & 0x03;
+	}
+	
+	return 1;
+}
+
 void handle_player_input(player_info *ply, unsigned int joy, unsigned int upKey, unsigned int downKey, unsigned int fireKey) {
+	char cur_key = 0;
+	
 	if (joy & upKey) {
 		if (ply->act.y > PLAYER_TOP) ply->act.y -= PLAYER_SPEED;
+		cur_key = 'U';
 	} else if (joy & downKey) {
 		if (ply->act.y < PLAYER_BOTTOM) ply->act.y += PLAYER_SPEED;
+		cur_key = 'D';
+	} else if (joy & fireKey) {
+		cur_key = 'B';
 	}
+	
+	if (cur_key && !ply->last_key) {
+		ply->key_buffer[ply->key_pos] = cur_key;
+		ply->key_pos = (ply->key_pos + 1) & 0x03;
+		
+		if (has_key_sequence(ply, "BBBB")) {
+			init_actor(&projectile, ply->act.x, ply->act.y, 2, 1, 4, 4);
+			memset(ply->key_buffer, 0, 4);
+		}
+	}
+	
+	ply->last_key = cur_key;
 }
 
 void handle_player_ai(player_info *ply) {
@@ -184,10 +221,6 @@ void gameplay_loop() {
 
 	SMS_displayOn();
 	
-	/*
-	init_actor(&player1.act, 16, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
-	init_actor(&player2.act, 256 - 24, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
-	*/
 	init_player(&player1, 16);
 	init_player(&player2, 256 - 24);
 

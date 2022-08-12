@@ -32,6 +32,8 @@ player_info player2;
 actor ball;
 actor finish_him;
 
+char is_stage_fatality;
+
 struct ball_ctl {
 	signed char spd_x, spd_y;
 } ball_ctl;
@@ -103,6 +105,8 @@ void handle_player_input(player_info *ply, unsigned int joy, unsigned int upKey,
 			init_actor(&ply->atk, ply->act.x, ply->act.y + 8, 2, 1, 4, 4);
 			memset(ply->key_buffer, 0, 4);
 		}
+		
+		if (finish_him.active && has_key_sequence(ply, "DDDD")) is_stage_fatality = 1;
 	}
 	
 	ply->last_key = cur_key;
@@ -278,7 +282,8 @@ void gameplay_loop() {
 	init_actor(&finish_him, (SCREEN_W - 48) >> 1, PLAYER_TOP + 48, 6, 1, 116, 1);
 	finish_him.active = 0;
 
-	while (1) {	
+	is_stage_fatality = 0;
+	while (!is_stage_fatality) {	
 		handle_players_input();
 		handle_ball();
 		handle_projectiles();
@@ -304,9 +309,23 @@ void gameplay_loop() {
 	}
 }
 
+void fatality_sequence() {
+	SMS_displayOff();
+
+	clear_sprites();
+	SMS_loadPSGaidencompressedTiles(the_pit_fatality_tiles_psgcompr, 0);
+	SMS_loadTileMap(0, 0, the_pit_fatality_tilemap_bin, the_pit_fatality_tilemap_bin_size);
+	SMS_loadBGPalette(the_pit_fatality_palette_bin);
+	
+	SMS_displayOn();
+
+	wait_frames(180);
+}
+
 void main() {	
 	while (1) {
 		gameplay_loop();
+		fatality_sequence();
 	}
 }
 

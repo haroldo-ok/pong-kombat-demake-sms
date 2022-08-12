@@ -18,6 +18,8 @@ typedef struct player_info {
 	actor act;	
 	actor atk;
 	
+	actor score_actor;
+	
 	char last_key;
 	char key_pos;
 	char key_buffer[4];
@@ -55,6 +57,7 @@ void wait_button_release() {
 void init_player(player_info *ply, int x) {
 	memset(ply, 0, sizeof(player_info));
 	init_actor(&ply->act, x, PLAYER_BOTTOM - 16, 1, 3, 2, 1);
+	init_actor(&ply->score_actor, x + (x < 128 ? 48 : -48), PLAYER_TOP + 8, 1, 1, 172, 1);
 }
 
 char has_key_sequence(player_info *ply, char *sequence) {
@@ -186,6 +189,11 @@ void draw_projectiles() {
 	draw_actor(&player2.atk);
 }
 
+void draw_scores() {
+	draw_actor(&player1.score_actor);
+	draw_actor(&player2.score_actor);
+}
+
 void clear_tilemap() {
 	SMS_setNextTileatXY(0, 0);
 	for (int i = (SCREEN_CHAR_W * SCROLL_CHAR_H); i; i--) {
@@ -253,6 +261,7 @@ void gameplay_loop() {
 		draw_players();
 		draw_actor(&ball);
 		draw_projectiles();
+		draw_scores();
 		
 		SMS_finalizeSprites();
 		SMS_waitForVBlank();

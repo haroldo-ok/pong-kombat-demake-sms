@@ -99,7 +99,7 @@ void handle_player_input(player_info *ply, unsigned int joy, unsigned int upKey,
 		ply->key_buffer[ply->key_pos] = cur_key;
 		ply->key_pos = (ply->key_pos + 1) & 0x03;
 		
-		if (has_key_sequence(ply, "BBBB")) {
+		if (!finish_him.active && has_key_sequence(ply, "BBBB")) {
 			init_actor(&ply->atk, ply->act.x, ply->act.y + 8, 2, 1, 4, 4);
 			memset(ply->key_buffer, 0, 4);
 		}
@@ -154,7 +154,7 @@ void calculate_ball_deflection(actor *ply) {
 }
 
 void handle_ball() {
-	if (!ball.active) {
+	if (!ball.active && !finish_him.active) {
 		init_actor(&ball, (SCREEN_W >> 1) - 8, (SCREEN_H >> 1) - 8, 2, 1, 48 + ((rand() % 4) << 2), 1);
 		ball_ctl.spd_x = rand() & 1 ? 1 : -1;
 		ball_ctl.spd_y = rand() & 1 ? 1 : -1;
@@ -276,11 +276,19 @@ void gameplay_loop() {
 	init_ball();
 
 	init_actor(&finish_him, (SCREEN_W - 48) >> 1, PLAYER_TOP + 48, 6, 1, 116, 1);
+	finish_him.active = 0;
 
 	while (1) {	
 		handle_players_input();
 		handle_ball();
 		handle_projectiles();
+		
+		if (player1.score == 2 || player2.score == 9) {
+			finish_him.active = 1;
+			ball.active = 0;
+			player1.atk.active = 0;
+			player2.atk.active = 0;
+		}
 		
 		SMS_initSprites();
 

@@ -181,16 +181,25 @@ void handle_ball() {
 	}
 }
 
-void handle_projectile(player_info *ply, int speed) {
+void handle_projectile(player_info *ply, player_info *enm, int speed) {
 	if (!ply->atk.active) return;
 	
 	ply->atk.x += speed;
-	if (ply->atk.x < 0 || ply->atk.x > SCREEN_W - 16) ply->atk.active = 0;
+	if (ply->atk.x < 0 || ply->atk.x > SCREEN_W - 16) {
+		ply->atk.active = 0;
+		return;
+	}
+
+	if (ply->atk.x > enm->act.x - 8 && ply->atk.x < enm->act.x + 8 &&
+		ply->atk.y > enm->act.y - 14 && ply->atk.y < enm->act.y + 30) {
+		ply->atk.active = 0;
+		update_score(ply, 1);
+	}
 }
 
 void handle_projectiles() {
-	handle_projectile(&player1, 3);
-	handle_projectile(&player2, -3);
+	handle_projectile(&player1, &player2, 3);
+	handle_projectile(&player2, &player1, -3);
 }
 
 void draw_projectiles() {

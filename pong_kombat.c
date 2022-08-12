@@ -267,7 +267,7 @@ void main() {
 }
 
 SMS_EMBED_SEGA_ROM_HEADER(9999,0); // code 9999 hopefully free, here this means 'homebrew'
-SMS_EMBED_SDSC_HEADER(0,1, 2022, 8, 9, "Haroldo-OK\\2022", "Pong Kombat Demake",
+SMS_EMBED_SDSC_HEADER(0,2, 2022, 8, 12, "Haroldo-OK\\2022", "Pong Kombat Demake",
   "MS-DOS \"Pong Kombat\" demade for the Sega Master System.\n"
   "Originally made for the \"So Bad it's Good' Jam 2022\" - https://itch.io/jam/sbigjam2022");
 

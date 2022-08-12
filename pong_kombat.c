@@ -288,7 +288,7 @@ void gameplay_loop() {
 		handle_ball();
 		handle_projectiles();
 		
-		if (player1.score == 2 || player2.score == 9) {
+		if (player1.score == 9 || player2.score == 9) {
 			finish_him.active = 1;
 			ball.active = 0;
 			player1.atk.active = 0;

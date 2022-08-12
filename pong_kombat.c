@@ -309,6 +309,21 @@ void gameplay_loop() {
 	}
 }
 
+void title_sequence() {
+	SMS_displayOff();
+
+	clear_sprites();
+	SMS_loadPSGaidencompressedTiles(title_tiles_psgcompr, 0);
+	SMS_loadTileMap(0, 0, title_tilemap_bin, title_tilemap_bin_size);
+	SMS_loadBGPalette(title_palette_bin);
+	
+	SMS_displayOn();
+
+	wait_button_release();
+	wait_button_press();
+	wait_button_release();
+}
+
 void fatality_sequence() {
 	SMS_displayOff();
 
@@ -324,6 +339,7 @@ void fatality_sequence() {
 
 void main() {	
 	while (1) {
+		title_sequence();
 		gameplay_loop();
 		fatality_sequence();
 	}

@@ -17,7 +17,8 @@
 typedef struct player_info {
 	actor act;	
 	actor atk;
-	
+
+	char score;
 	actor score_actor;
 	
 	char last_key;
@@ -35,6 +36,11 @@ struct ball_ctl {
 } ball_ctl;
 
 char frames_elapsed;
+
+
+// Forward declarations
+extern void update_score(player_info *ply, int delta);
+
 
 void load_standard_palettes() {
 	SMS_loadBGPalette(the_pit_palette_bin);
@@ -156,7 +162,10 @@ void handle_ball() {
 	ball.x += ball_ctl.spd_x;
 	ball.y += ball_ctl.spd_y;
 	
-	if (ball.x < 0 || ball.x > SCREEN_W - 8) ball.active = 0;	
+	if (ball.x < 0 || ball.x > SCREEN_W - 8) {
+		ball.active = 0;
+		update_score(ball.x < 0 ? &player2 : &player1, 1);
+	}
 	if (ball.y < 0 || ball.y > SCREEN_H - 16) ball_ctl.spd_y = -ball_ctl.spd_y;
 	
 	if (ball.x > player1.act.x && ball.x < player1.act.x + 8 &&
@@ -187,6 +196,11 @@ void handle_projectiles() {
 void draw_projectiles() {
 	draw_actor(&player1.atk);
 	draw_actor(&player2.atk);
+}
+
+void update_score(player_info *ply, int delta) {
+	ply->score += delta;
+	ply->score_actor.base_tile = 172 + (ply->score << 1);
 }
 
 void draw_scores() {

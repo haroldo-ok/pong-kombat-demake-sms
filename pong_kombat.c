@@ -30,6 +30,7 @@ player_info player1;
 player_info player2;
 
 actor ball;
+actor finish_him;
 
 struct ball_ctl {
 	signed char spd_x, spd_y;
@@ -274,6 +275,8 @@ void gameplay_loop() {
 
 	init_ball();
 
+	init_actor(&finish_him, (SCREEN_W - 48) >> 1, PLAYER_TOP + 48, 6, 1, 116, 1);
+
 	while (1) {	
 		handle_players_input();
 		handle_ball();
@@ -285,6 +288,7 @@ void gameplay_loop() {
 		draw_actor(&ball);
 		draw_projectiles();
 		draw_scores();
+		draw_actor(&finish_him);
 		
 		SMS_finalizeSprites();
 		SMS_waitForVBlank();
